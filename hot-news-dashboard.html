@@ -1,0 +1,1023 @@
+!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>热点新闻速览 · 全国 & 湖南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080c;
+    --surface: #111118;
+    --card: #181820;
+    --card-h: #1f1f2a;
+    --red: #b91c1c;
+    --red-glow: rgba(185,28,28,0.18);
+    --blue: #1d4ed8;
+    --blue-glow: rgba(29,78,216,0.18);
+    --gold: #b8860b;
+    --txt: #ece8e0;
+    --muted: #6b6b80;
+    --dim: #3a3a4e;
+    --border: #252538;
+    --r: 14px;
+    --serif: 'Noto Serif SC', serif;
+    --sans: 'Noto Sans SC', sans-serif;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+  /* ── top ticker ── */
+  .ticker {
+    background: linear-gradient(90deg, #7f1d1d, #b91c1c, #7f1d1d);
+    padding: 7px 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    overflow: hidden; position: relative;
+  }
+  .ticker::before, .ticker::after {
+    content: ''; position: absolute; top:0; bottom:0; width: 40px; z-index: 2;
+  }
+  .ticker::before { left:0; background: linear-gradient(90deg, #7f1d1d, transparent); }
+  .ticker::after  { right:0; background: linear-gradient(-90deg, #7f1d1d, transparent); }
+  .ticker-badge {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.85);
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #fff; animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
+  .ticker-scroll {
+    flex: 1; overflow: hidden; position: relative; height: 18px;
+  }
+  .ticker-track {
+    display: flex; gap: 48px; white-space: nowrap;
+    animation: scroll 40s linear infinite;
+    font-size: 12px; color: rgba(255,255,255,0.8);
+  }
+  .ticker-track span { display: inline-flex; align-items: center; gap: 6px; }
+  .ticker-track span::before { content: '·'; color: rgba(255,255,255,0.4); }
+  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── header ── */
+  header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand h1 {
+    font-family: var(--serif);
+    font-size: 26px; font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #ece8e0, #b0a898);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .brand p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .header-meta {
+    text-align: right; font-size: 12px; color: var(--muted);
+  }
+  .header-meta .date { font-size: 14px; color: var(--txt); font-weight: 500; }
+  .header-meta .update-info { margin-top: 4px; }
+
+  /* ── toolbar ── */
+  .toolbar {
+    max-width: 1100px; margin: 0 auto;
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--txt); font-size: 12px; cursor: pointer;
+    transition: background 0.15s; font-family: var(--sans);
+  }
+  .btn:hover { background: var(--card-h); }
+  .btn-primary { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-primary:hover { background: #9a1818; }
+  .btn svg { width: 14px; height: 14px; }
+  .auto-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted); margin-left: auto;
+  }
+  .toggle {
+    width: 32px; height: 18px; border-radius: 9px;
+    background: var(--dim); cursor: pointer; position: relative;
+    transition: background 0.2s;
+  }
+  .toggle.active { background: var(--red); }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; transition: transform 0.2s;
+  }
+  .toggle.active::after { transform: translateX(14px); }
+
+  /* ── stats ── */
+  .stats {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px 14px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .chip .num { color: var(--txt); font-weight: 600; font-size: 14px; }
+  .chip.info { background: transparent; border-color: transparent; color: var(--muted); }
+
+  /* ── main ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 24px 40px; }
+  .section { margin-bottom: 32px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .icon.nation { background: rgba(185,28,28,0.15); }
+  .icon.hunan  { background: rgba(29,78,216,0.15); }
+  .sec-title { font-size: 16px; font-weight: 600; }
+  .sec-sub   { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-top: 1px; }
+
+  /* ── news cards ── */
+  .news-list {
+    display: grid; gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .card {
+    position: relative;
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    text-decoration: none; color: inherit;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    animation: fadeUp 0.3s ease both;
+  }
+  .card:hover {
+    background: var(--card-h);
+    border-color: var(--dim);
+    transform: translateY(-1px);
+  }
+  .card.hc:hover { border-color: var(--blue); }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .rank {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 6px;
+    background: var(--dim); color: var(--muted);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-title {
+    font-size: 13px; font-weight: 500; line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-meta {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 6px; flex-wrap: wrap;
+  }
+  .src-tag {
+    font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    background: rgba(184,134,11,0.15); color: var(--gold);
+  }
+  .date-tag { font-size: 10px; color: var(--muted); }
+  .type-tag {
+    font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    background: rgba(107,107,128,0.2); color: var(--muted);
+  }
+  .type-tag.hot { background: rgba(185,28,28,0.15); color: #e85555; }
+  .type-tag.poli{ background: rgba(29,78,216,0.15); color: #6b9bff; }
+  .type-tag.tech{ background: rgba(6,182,212,0.15);  color: #22d3ee; }
+  .type-tag.cult{ background: rgba(168,85,247,0.15); color: #c084fc; }
+  .type-tag.soc { background: rgba(34,197,94,0.15);  color: #4ade80; }
+  .arrow { flex-shrink: 0; color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+  /* NEW badge */
+  .card.new-badge::after {
+    content: 'NEW';
+    position: absolute; top: 8px; right: 8px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+    background: var(--red); color: #fff;
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* ── empty state ── */
+  .empty {
+    grid-column: 1/-1;
+    text-align: center; padding: 48px 20px;
+    color: var(--muted); font-size: 13px;
+  }
+  .empty .ico { font-size: 32px; margin-bottom: 12px; }
+
+  /* ── skeleton ── */
+  .skel {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    background: var(--card);
+  }
+  .skel-c {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--dim); flex-shrink: 0; margin-top: 2px;
+    animation: blink 1.2s ease-in-out infinite;
+  }
+  .skel-l { height: 10px; border-radius: 3px; background: var(--dim); margin-bottom: 6px; animation: blink 1.2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── modal ── */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: none; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; width: 90%; max-width: 560px;
+  }
+  .modal h3 { font-size: 16px; margin-bottom: 8px; }
+  .modal p  { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.6; }
+  .modal textarea {
+    width: 100%; height: 140px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--txt); font-size: 12px; padding: 10px;
+    font-family: monospace; resize: vertical;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+
+  /* ── toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 18px;
+    font-size: 13px; color: var(--txt); z-index: 2000;
+    opacity: 0; transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: #22c55e44; }
+
+  /* ── offline banner ── */
+  .offline-banner {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px 10px;
+  }
+  .offline-banner .banner-inner {
+    background: rgba(184,134,11,0.08);
+    border: 1px solid rgba(184,134,11,0.25);
+    border-radius: 10px; padding: 10px 16px;
+    font-size: 12px; color: #d4a84b;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .offline-banner .banner-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ── footer ── */
+  footer {
+    max-width: 1100px; margin: 0 auto; padding: 20px 24px 32px;
+    border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--muted); line-height: 1.8;
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .brand h1 { font-size: 20px; }
+    .news-list { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ticker -->
+<div class="ticker">
+  <div class="ticker-badge">
+    <span class="live-dot"></span>
+    <span id="tickerDate">--</span>
+  </div>
+  <div class="ticker-scroll">
+    <div class="ticker-track" id="tickerTrack">
+      <span>热点新闻速览 · 加载中…</span>
+    </div>
+  </div>
+</div>
+
+<!-- header -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>热点新闻速览</h1>
+      <p id="updateMode">正在获取最新新闻…</p>
+    </div>
+    <div class="header-meta">
+      <div class="date" id="headerDate">--</div>
+      <div class="update-info">
+        <span id="statusBadge" class="badge err">◉ 加载中</span>
+        &nbsp;·&nbsp;<span id="statusMsg">请稍候…</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- toolbar -->
+<div class="toolbar">
+  <button class="btn btn-primary" id="refreshBtn" onclick="doRefresh()">
+    <svg id="refreshIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+    </svg>
+    刷新新闻
+  </button>
+  <button class="btn" onclick="openModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+    手动导入
+  </button>
+  <button class="btn" onclick="exportNews()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    导出数据
+  </button>
+  <button class="btn" onclick="openSource('nation')">📰 全国新闻源</button>
+  <button class="btn" onclick="openSource('hunan')">📰 湖南新闻源</button>
+  <div class="auto-label">
+    <span>自动刷新</span>
+    <div class="toggle active" id="autoToggle" onclick="toggleAuto()"></div>
+    <span>30 分钟</span>
+  </div>
+</div>
+
+<!-- stats -->
+<div class="stats">
+  <div class="chip"><span>今日获取</span><span class="num" id="statTotal">--</span></div>
+  <div class="chip"><span>全国热点</span><span class="num" id="statNation">--</span></div>
+  <div class="chip"><span>湖南要闻</span><span class="num" id="statHunan">--</span></div>
+  <div class="chip info"><span id="statusMsg2">正在加载新闻数据…</span></div>
+</div>
+
+<!-- offline banner (shown when no live data) -->
+<div class="offline-banner" id="offlineBanner" style="display:none">
+  <div class="banner-inner">
+    <span class="banner-icon">⚠️</span>
+    <span>当前处于离线模式：无法连接到新闻源服务器（本地代理 + RSSHub 均不可用），显示基于日期生成的模拟数据。请在本地运行 <code style="background:rgba(184,134,11,0.2);padding:1px 4px;border-radius:3px">node news-proxy.js</code> 后刷新获取实时新闻，或通过 RSSHub 获取在线新闻。</span>
+  </div>
+</div>
+
+<!-- main -->
+<main>
+  <div class="section">
+    <div class="section-header">
+      <div class="icon nation">🇨🇳</div>
+      <div>
+        <div class="sec-title">全国热点新闻</div>
+        <div class="sec-sub">CHINA NATIONAL · HOT NEWS</div>
+      </div>
+    </div>
+    <div class="news-list" id="nationGrid">
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="icon hunan">🏔️</div>
+      <div>
+        <div class="sec-title">湖南省热点新闻</div>
+        <div class="sec-sub">HUNAN PROVINCE · HOT NEWS</div>
+      </div>
+    </div>
+    <div class="news-list" id="hunanGrid">
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+      <div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>数据来源：<a href="https://www.gov.cn" target="_blank">中国政府网</a> / <a href="https://www.people.com.cn" target="_blank">人民日报</a> / 新华网 / 央广网 / 红网 / 华声在线 / 湖南日报</p>
+  <p>每次打开页面自动拉取最新新闻 · 每30分钟自动刷新 · <span id="footerMode">离线模式</span></p>
+</footer>
+
+<!-- import modal -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>手动导入新闻数据</h3>
+    <p>将包含新闻条目的 JSON 数组粘贴到下方，例如：<br>
+       <code style="color:var(--gold);font-size:11px">[{title:"标题",source:"来源",date:"2026-09-19",type:"tech",url:"链接"}]</code></p>
+    <textarea id="importData" placeholder='[{"title":"新闻标题","source":"来源","date":"2026-09-19","type":"tech","url":"https://..."}]'></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="doImport()">导入并应用</button>
+    </div>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   配置：三层数据源优先级
+   1. 本地代理 (127.0.0.1:3210) — 最完整，支持国内 RSS
+   2. RSSHub 公共实例 — 无需本地代理，可直接从 GitHub Pages 使用
+   3. 动态生成 — 最后兜底
+   ═══════════════════════════════════════════════════════════ */
+const IS_LOCAL = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+const API_BASE = IS_LOCAL ? '' : 'http://127.0.0.1:3210';
+
+// RSSHub 公共实例（支持 CORS，无需代理）
+const RSSHUB = 'https://rsshub.app';
+const RSS_FEEDS = {
+  nation: [
+    { name: '人民日报',   url: `${RSSHUB}/people/rmrb`,           limit: 10 },
+    { name: '新华网',     url: `${RSSHUB}/xinhua/politics`,       limit: 10 },
+    { name: '中国政府网', url: `${RSSHUB}/gov/gov`,               limit: 8 },
+    { name: '央广网',     url: `${RSSHUB}/cnr/cnrchina`,         limit: 8 },
+    { name: '光明网',     url: `${RSSHUB}/gmw/gmwview`,          limit: 8 },
+  ],
+  hunan: [
+    { name: '红网',       url: `${RSSHUB}/rednet/hunan`,          limit: 8 },
+    { name: '华声在线',   url: `${RSSHUB}/voc/vocnews`,           limit: 6 },
+    { name: '湖南日报',   url: `${RSSHUB}/hunan/hnrmt`,           limit: 6 },
+  ],
+};
+
+// 备用 RSSHub（主实例不可用时）
+const RSSHUB_ALT = 'https://rsshub.rssforever.com';
+const RSS_FEEDS_ALT = {
+  nation: [
+    { name: '人民日报',   url: `${RSSHUB_ALT}/people/rmrb`,   limit: 8 },
+    { name: '新华网',     url: `${RSSHUB_ALT}/xinhua/politics`, limit: 8 },
+    { name: '中国政府网', url: `${RSSHUB_ALT}/gov/gov`,        limit: 6 },
+  ],
+  hunan: [
+    { name: '红网',       url: `${RSSHUB_ALT}/rednet/hunan`,   limit: 6 },
+    { name: '华声在线',   url: `${RSSHUB_ALT}/voc/vocnews`,    limit: 5 },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+let autoRefresh   = true;
+let autoTimer     = null;
+let nationData    = [];
+let hunanData     = [];
+let serverStatus  = 'unknown';
+let isOfflineMode = false;
+const REFRESH_MS  = 30 * 60 * 1000;
+const CACHE_KEY   = { nation: 'hn_nation', hunan: 'hn_hunan' };
+const META_KEY    = 'hn_meta';
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // 先尝试加载缓存，立即渲染
+  const cached = loadCache();
+  if (cached.nation.length || cached.hunan.length) {
+    nationData = cached.nation;
+    hunanData  = cached.hunan;
+    isOfflineMode = !cached.online;
+    renderAll();
+    buildTicker();
+    updateClock();
+    updateFooterMode(isOfflineMode);
+  }
+
+  document.getElementById('updateMode').textContent = '正在获取最新新闻…';
+  startAutoRefresh();
+  fetchLatest(); // 异步获取最新数据
+
+  // 页面可见时自动刷新
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') fetchLatest();
+  });
+
+  // 定期刷新（30分钟）
+  setInterval(() => {
+    if (autoRefresh) fetchLatest();
+  }, REFRESH_MS);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   数据获取（三层优先级）
+   ═══════════════════════════════════════════════════════════ */
+async function fetchLatest() {
+  setServerStatus('loading');
+  document.getElementById('updateMode').textContent = '正在获取最新新闻…';
+
+  // 第一层：本地代理
+  if (IS_LOCAL) {
+    try {
+      const r = await fetchWithTimeout(`${API_BASE}/api/news`, 10000);
+      if (r.ok) {
+        const data = await r.json();
+        if (data.nation?.length || data.hunan?.length) {
+          applyData(data.nation.map(normalize), data.hunan.map(normalize), true);
+          return;
+        }
+      }
+    } catch (e) { /* 本地代理不可用，降级到 RSSHub */ }
+  }
+
+  // 第二层：RSSHub
+  await fetchFromRSSHub(RSS_FEEDS, 'primary');
+}
+
+async function fetchFromRSSHub(feeds, layer) {
+  const results = { nation: [], hunan: [] };
+  let successCount = 0;
+
+  for (const [group, items] of Object.entries(feeds)) {
+    const tasks = items.map(async (feed) => {
+      try {
+        const resp = await fetchWithTimeout(feed.url, 8000);
+        if (!resp.ok) return null;
+        const xml = await resp.text();
+        const parsed = parseRSSFromXML(xml, feed.name, feed.limit);
+        return { group, items: parsed };
+      } catch { return null; }
+    });
+    const resolved = await Promise.allSettled(tasks);
+    for (const r of resolved) {
+      if (r.status === 'fulfilled' && r.value) {
+        results[r.value.group] = results[r.value.group].concat(r.value.items);
+        successCount++;
+      }
+    }
+  }
+
+  // 如果主 RSSHub 失败，尝试备用实例
+  if (successCount < 2) {
+    console.warn('[Dashboard] 主 RSSHub 不可用，尝试备用实例…');
+    await fetchFromRSSHub(RSS_FEEDS_ALT, 'alt');
+  }
+
+  // 过滤出今日/昨日的新闻
+  const todayStr = today();
+  const cutoff   = new Date(todayStr).getTime() - 86400000 * 2;
+
+  results.nation = dedupe(results.nation.filter(it => new Date(it.date).getTime() >= cutoff), 10)
+                   .slice(0, 10);
+  results.hunan  = dedupe(results.hunan.filter(it => new Date(it.date).getTime() >= cutoff), 8)
+                   .slice(0, 8);
+
+  // 如果 RSSHub 也失败，使用动态生成
+  if (!results.nation.length && !results.hunan.length) {
+    console.warn('[Dashboard] 所有数据源不可用，使用动态生成数据');
+    const dyn = generateDynamicFallback();
+    applyData(dyn.nation, dyn.hunan, false);
+    return;
+  }
+
+  applyData(results.nation, results.hunan, true);
+}
+
+async function fetchWithTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const resp = await fetch(url, { signal: ctrl.signal });
+    return resp;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RSS 解析（用于 RSSHub XML 响应）
+   ═══════════════════════════════════════════════════════════ */
+function parseRSSFromXML(xml, sourceName, limit = 10) {
+  const items = [];
+  const itemRegex = /<item[^>]*>([\s\S]*?)<\/item>/gi;
+  let match;
+  while ((match = itemRegex.exec(xml)) !== null && items.length < limit) {
+    const block = match[1];
+    const title  = extractText(block, 'title')?.trim() || '';
+    const link   = extractText(block, 'link') || '';
+    const date   = extractText(block, 'pubDate') || extractText(block, 'dc:date') || '';
+    if (title && title.length > 6) {
+      let cleanDate = '';
+      const m = date.match(/\d{4}[-/]\d{1,2}[-/]\d{1,2}/);
+      if (m) cleanDate = m[0];
+      items.push({
+        title,
+        source: sourceName,
+        date: cleanDate || today(),
+        type: inferType(title),
+        url: link || '#',
+      });
+    }
+  }
+  return items;
+}
+
+function extractText(xml, tag) {
+  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
+  const m  = xml.match(re);
+  return m ? m[1].replace(/<[^>]+>/g, '').trim() : null;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   数据应用 & 持久化
+   ═══════════════════════════════════════════════════════════ */
+function applyData(nation, hunan, online) {
+  nationData = nation;
+  hunanData  = hunan;
+  serverStatus = online ? 'online' : 'offline';
+  isOfflineMode = !online;
+  saveCache(nation, hunan, online);
+  renderAll();
+  buildTicker();
+  setStatus(serverStatus === 'online' ? 'ok' : 'warn',
+    online ? `已更新 · 共 ${nation.length + hunan.length} 条`
+           : `离线模式 · 显示今日/昨日新闻`);
+  document.getElementById('updateMode').textContent =
+    online ? '自动获取 · 实时更新' : '离线模式 · 动态生成';
+  updateFooterMode(!online);
+  document.getElementById('offlineBanner').style.display = !online ? 'block' : 'none';
+  if (online) showToast(`✅ 新闻已更新：全国 ${nation.length} 条 / 湖南 ${hunan.length} 条`, 'success');
+  else showToast('⚠️ 无法连接新闻源，已显示动态数据', 'warn');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════════════ */
+function renderAll() {
+  renderGrid('nationGrid', nationData, false);
+  renderGrid('hunanGrid',  hunanData,  true);
+  updateStats();
+  updateClock();
+}
+
+function renderGrid(id, items, isHunan) {
+  const el = document.getElementById(id);
+  if (!items.length) {
+    el.innerHTML = `<div class="empty">
+      <div class="ico">📭</div>
+      <p>暂无新闻数据<br><small>点击「刷新新闻」尝试重新获取</small></p>
+    </div>`;
+    return;
+  }
+  const nowStr = today();
+  el.innerHTML = items.map((it, i) => `
+    <a href="${esc(it.url)}" target="_blank" rel="noopener"
+       class="card ${isHunan?'hc':''} ${it.date===nowStr?'new-badge':''}"
+       style="animation-delay:${i*0.04}s">
+      <div class="rank">${i+1}</div>
+      <div class="card-body">
+        <div class="card-title">${esc(it.title)}</div>
+        <div class="card-meta">
+          <span class="src-tag">${esc(it.source)}</span>
+          <span class="date-tag">${it.date||''}</span>
+          <span class="type-tag ${it.type||'hot'}">${typeLabel(it.type)}</span>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+    </a>`).join('');
+}
+
+function typeLabel(t) {
+  return { hot:'热点', poli:'政策', tech:'科技', cult:'文化', soc:'民生' }[t] || '热点';
+}
+function inferType(title) {
+  if (/北斗|人工智能|AI|科技|创新|研发|专利|芯片|量子|航天|卫星/.test(title)) return 'tech';
+  if (/习近平|两会|总书记|政策|国务院|中央|会议|外交|部长/.test(title)) return 'poli';
+  if (/文化|文艺|非遗|节日|历史|博物馆|旅游|非遗/.test(title)) return 'cult';
+  if (/教育|医疗|社保|住房|就业|民生|养老|医保/.test(title)) return 'soc';
+  return 'hot';
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function today()    { return new Date().toISOString().slice(0,10); }
+function yesterday(){ return new Date(Date.now()-86400000).toISOString().slice(0,10); }
+
+function updateStats() {
+  const total = nationData.length + hunanData.length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statNation').textContent = nationData.length;
+  document.getElementById('statHunan').textContent  = hunanData.length;
+}
+
+function updateClock() {
+  const now  = new Date();
+  const wd = ['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
+  document.getElementById('headerDate').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${wd}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PERSISTENCE
+   ═══════════════════════════════════════════════════════════ */
+function loadCache() {
+  try {
+    const meta = JSON.parse(localStorage.getItem(META_KEY) || '{}');
+    return {
+      nation: JSON.parse(localStorage.getItem(CACHE_KEY.nation) || '[]'),
+      hunan:  JSON.parse(localStorage.getItem(CACHE_KEY.hunan)  || '[]'),
+      online: meta.online || false,
+    };
+  } catch { return { nation: [], hunan: [], online: false }; }
+}
+function saveCache(nation, hunan, online) {
+  try {
+    localStorage.setItem(CACHE_KEY.nation, JSON.stringify(nation));
+    localStorage.setItem(CACHE_KEY.hunan,  JSON.stringify(hunan));
+    localStorage.setItem(META_KEY, JSON.stringify({ online, savedAt: new Date().toISOString() }));
+  } catch {}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   动态生成今日/昨日新闻（完全不可用时兜底）
+   ═══════════════════════════════════════════════════════════ */
+function generateDynamicFallback() {
+  const now     = new Date();
+  const todayS  = today();
+  const yestS   = yesterday();
+  const month   = now.getMonth() + 1;
+  const day     = now.getDate();
+  const wd      = ['日','一','二','三','四','五','六'][now.getDay()];
+  const year    = now.getFullYear();
+
+  // 根据月份生成对应的时事模板
+  const seasonNews = {
+    9: [
+      '金秋九月，各地扎实推进秋季农业生产，确保粮食稳产增收',
+      '教育部部署秋季学期开学工作，强调做好校园安全和教学保障',
+      `${month}月${day}日，多地开展全民国防教育活动，增强国家安全意识`,
+      '国家统计局发布${month}月经济数据，服务业景气度持续回升',
+      '交通运输部推进综合交通枢纽建设，提升城市通勤效率',
+      '生态环境部开展秋季空气质量专项督查，推动绿色低碳发展',
+      `央行开展${month}月MLF操作，维护银行体系流动性合理充裕`,
+      '工信部印发制造业数字化转型行动方案，推动智能制造升级',
+      '农业农村部部署秋收工作，加强农机调度和技术指导',
+      '住建部推进保障性住房建设，切实解决新市民住房困难',
+    ],
+    default: [
+      `国务院召开常务会议，部署促进经济持续向好工作`,
+      `国家统计局发布${month}月经济数据，工业生产活力稳步提升`,
+      '外交部：中国始终是世界和平的建设者，坚持走和平发展道路',
+      '我国成功发射遥感卫星，航天科技实现新突破',
+      '"金九银十"消费市场回暖，多地出台促消费政策稳增长',
+      '全国多地迎来秋季招生季，教育改革在各省份深入推进',
+      '生态环境部：今年前三季度空气质量优良天数比例达 88% 以上',
+      '中国人民银行宣布定向降准，释放长期资金支持实体经济发展',
+      '中国航天科技集团发布新一代载人飞船方案，探月工程持续推进',
+      '公安部开展夏季治安打击整治行动，维护社会和谐稳定',
+    ],
+  };
+  const seasonItems = seasonNews[month] || seasonNews.default;
+
+  const nationTemplates = seasonItems.map((t, i) => ({
+    title: t,
+    source: ['中国政府网','人民日报','新华网','央广网','光明网','中国经济网'][i % 6],
+    type: ['poli','tech','hot','soc','tech','poli'][i % 6],
+  }));
+
+  const hunanTemplates = [
+    `湖南省委常委会召开会议，研究部署当前重点工作`,
+    `2026中国（长沙）人工智能产业发展大会在长举行，汇聚全球顶尖专家`,
+    `岳阳港前三季度吞吐量突破1.2亿吨，集装箱业务同比增长18%`,
+    '湖南加快新型基础设施建设，5G基站累计突破12万个',
+    '湖南省教育厅发布基础教育提质行动方案，推进优质均衡',
+    '张家界景区国庆前客流火爆，智慧旅游系统全面升级',
+    '长株潭都市圈交通一体化取得新进展，城际铁路建设加速',
+    '湖南省税务局落实减税降费政策，惠及市场主体超百万户',
+    '湖南非遗文化传承发展成效显著，多项技艺入选国家级名录',
+    '湘江长沙站水位平稳，防汛工作有序开展',
+  ].map(t => ({ title: t, source: ['红网','华声在线','湖南日报','湖南省政府网','长沙晚报'][Math.floor(Math.random()*5)], type: ['poli','tech','hot','tech','cult'][Math.floor(Math.random()*5)] }));
+
+  const pick = (arr, count) => {
+    const shuffled = [...arr].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count).map(t => ({
+      ...t,
+      date: Math.random() > 0.4 ? todayS : yestS,
+    }));
+  };
+
+  return {
+    nation: pick(nationTemplates, 8),
+    hunan:  pick(hunanTemplates, 6),
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TICKER
+   ═══════════════════════════════════════════════════════════ */
+function buildTicker() {
+  const all   = [...nationData, ...hunanData].slice(0, 15);
+  const track = document.getElementById('tickerTrack');
+  const html  = all.map(it => `<span>${esc(it.title)}</span>`).join('');
+  track.innerHTML = html + html;
+  const now = new Date();
+  document.getElementById('tickerDate').textContent =
+    `${now.getMonth()+1}月${now.getDate()}日 ${['周日','周一','周二','周三','周四','周五','周六'][now.getDay()]}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS
+   ═══════════════════════════════════════════════════════════ */
+async function doRefresh() {
+  const btn = document.getElementById('refreshBtn');
+  const icon = document.getElementById('refreshIcon');
+  btn.disabled = true;
+  icon.style.animation = 'spin 0.6s linear';
+  showSkel();
+  setStatus('fetching', '正在获取最新新闻…');
+  await sleep(300);
+  await fetchLatest();
+  btn.disabled = false;
+  icon.style.animation = '';
+}
+
+function showSkel() {
+  const s = Array(5).fill('').map(() =>
+    `<div class="skel"><div class="skel-c"></div><div><div class="skel-l" style="width:92%"></div><div class="skel-l" style="width:55%"></div></div><div class="skel-c" style="width:22px;height:22px;border-radius:4px"></div></div>`
+  ).join('');
+  document.getElementById('nationGrid').innerHTML = s;
+  document.getElementById('hunanGrid').innerHTML  = s;
+}
+
+function setStatus(type, msg) {
+  const badge = document.getElementById('statusBadge');
+  const msgEl = document.getElementById('statusMsg');
+  const msgEl2 = document.getElementById('statusMsg2');
+  badge.className = 'badge ' + (type==='ok'?'ok': type==='warn'?'warn':'err');
+  badge.textContent = type==='ok'?'✓ 已连接' : type==='warn'?'◉ 离线模式' : '⏳ 加载中';
+  if (msgEl) msgEl.textContent = msg;
+  if (msgEl2) msgEl2.textContent = msg;
+}
+
+function setServerStatus(s) {
+  serverStatus = s;
+  setStatus(s === 'loading' ? 'fetching' : s === 'online' ? 'ok' : 'warn', '');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   IMPORT / EXPORT
+   ═══════════════════════════════════════════════════════════ */
+function openModal() {
+  document.getElementById('modalBg').classList.add('open');
+  document.getElementById('importData').value = '';
+  document.getElementById('importData').focus();
+}
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+}
+function doImport() {
+  const raw = document.getElementById('importData').value.trim();
+  if (!raw) { alert('请粘贴 JSON 数据'); return; }
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) throw new Error('需要数组格式');
+    const isNation = parsed.some(it => it.url && (
+      it.url.includes('gov.cn') || it.url.includes('people.com.cn') ||
+      it.url.includes('xinhuanet.com') || it.url.includes('cnr.cn')
+    ));
+    if (isNation) {
+      nationData = parsed.map(normalize);
+    } else {
+      hunanData = parsed.map(normalize);
+    }
+    saveCache(nationData, hunanData, false);
+    renderAll();
+    buildTicker();
+    closeModal();
+    setStatus('ok', `已导入 ${parsed.length} 条`);
+    showToast(`✅ 导入成功：${parsed.length} 条新闻`, 'success');
+  } catch(e) {
+    alert('JSON 解析失败：' + e.message);
+  }
+}
+function exportNews() {
+  const data = {
+    nation:   nationData,
+    hunan:    hunanData,
+    exportedAt: new Date().toISOString(),
+    source:   serverStatus === 'online' ? 'news-proxy API' : 'local cache',
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `hot-news-${today()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 数据已导出', 'success');
+}
+function normalize(it) {
+  return {
+    title:  it.title  || '',
+    source: it.source|| it.src || '未知来源',
+    date:   it.date  || today(),
+    type:   ['hot','poli','tech','cult','soc'].includes(it.type) ? it.type : 'hot',
+    url:    it.url    || '#',
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════════ */
+function dedupe(items, limit) {
+  const seen = new Set();
+  return items.filter(it => {
+    const key = it.title.slice(0, 10);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, limit);
+}
+function toggleAuto() {
+  autoRefresh = !autoRefresh;
+  document.getElementById('autoToggle').classList.toggle('active', autoRefresh);
+  if (!autoRefresh) clearTimeout(autoTimer);
+}
+function startAutoRefresh() {
+  clearTimeout(autoTimer);
+  if (!autoRefresh) return;
+  autoTimer = setTimeout(async () => {
+    await doRefresh();
+    if (autoRefresh) startAutoRefresh();
+  }, REFRESH_MS);
+}
+function openSource(which) {
+  const urls = {
+    nation: 'https://www.gov.cn/yaowen/liebiao/',
+    hunan:  'https://www.hunan.gov.cn/hnszf/hnyw/zwdt/szdt_sjpx.html',
+  };
+  window.open(urls[which], '_blank');
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ── Toast 提示 ── */
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+/* ── Spin keyframe ── */
+const _st = document.createElement('style');
+_st.textContent = `@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`;
+document.head.appendChild(_st);
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'n' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); openModal(); }
+  if (e.key === 'r' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); doRefresh(); }
+});
+
+/* ── 更新页脚模式说明 ── */
+function updateFooterMode(offline) {
+  const el = document.getElementById('footerMode');
+  el.textContent = offline
+    ? '离线模式（动态生成数据）'
+    : (IS_LOCAL ? '在线模式（RSS 实时数据）' : '在线模式（RSSHub 实时数据）');
+}
+</script>
+</body>
+</html>
